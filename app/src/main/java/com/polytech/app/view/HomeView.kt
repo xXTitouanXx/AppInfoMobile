@@ -1,6 +1,10 @@
 package com.polytech.app.view
 
+import android.util.Log
+import android.widget.TextView
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,38 +22,52 @@ import com.ramcosta.composedestinations.result.ResultRecipient
 @Composable
 fun HomeView(
     navigator: DestinationsNavigator,
-   // resultRecipient: ResultRecipient<FormViewDestination, FormData?>
+    resultRecipient: ResultRecipient<FormViewDestination, FormData>
 ) {
+    val scrollState = rememberScrollState()
     var displayText by remember { mutableStateOf("Welcome to Home View!") }
+    var isFavorite by remember { mutableStateOf(false) }
+    var selectedProductType by remember { mutableStateOf<String?>(null) }
+    var productName by remember { mutableStateOf<String?>(null) }
+    var purchaseDate by remember { mutableStateOf<String?>(null) }
+    var origin by remember { mutableStateOf<String?>(null) }
 
-//    resultRecipient.onNavResult { result ->
-//        val data = when (result) {
-//            is NavResult.Value -> result.value
-//            else -> null
-//        }
-//
-//        displayText = if (data != null) {
-//            """
-//            Nom: ${data.productName ?: "Non spécifié"}
-//            Date d'achat: ${data.purchaseDate ?: "Non spécifié"}
-//            Pays d'origine: ${data.origin ?: "Non spécifié"}
-//            Type: ${data.selectedProductType ?: "Non spécifié"}
-//                        Favoris: ${if (data.isFavorite) "Oui" else "Non"}
-//
-//            """.trimIndent()
-//        } else {
-//            "Aucune donnée reçue"
-//        }
-//    }
-
+    resultRecipient.onNavResult {
+        if (it is NavResult.Value) {
+            productName = it.value.productName.toString()
+            purchaseDate = it.value.purchaseDate.toString()
+            origin = it.value.origin.toString()
+            selectedProductType = it.value.selectedProductType.toString()
+            isFavorite = it.value.isFavorite
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
         Text(displayText)
+        if (productName != null) {
+            Text("Nom du produit: $productName")
+        }
+        if (purchaseDate != null) {
+            Text("Date d'achat: $purchaseDate")
+        }
+        if (origin != null) {
+            Text("Pays d'origine: $origin")
+        }
+        if (selectedProductType != null) {
+            Text("Type de produit: $selectedProductType")
+        }
+        if (isFavorite) {
+            Text("Favoris: Oui")
+        } else {
+            Text("Favoris: Non")
+        }
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { navigator.navigate(FormViewDestination) }) {
             Text("Open Form")

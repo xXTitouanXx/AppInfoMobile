@@ -1,6 +1,9 @@
 package com.polytech.app.view
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
+import com.polytech.app.MyImageArea
 import com.polytech.app.R
 import com.polytech.app.model.FormData
 import com.polytech.app.ui.theme.AppInfoMobileTheme
@@ -53,6 +57,14 @@ fun FormView(
     var showConfirmationDialog by remember { mutableStateOf(false) }
     var isDatePickerDialogOpen by remember { mutableStateOf(false) }
 
+    // Variables pour les messages d'erreur
+    var productNameError by remember { mutableStateOf<String?>(null) }
+    var purchaseDateError by remember { mutableStateOf<String?>(null) }
+
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    val context = LocalContext.current
+    val directory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
     val scrollState = rememberScrollState()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -75,6 +87,11 @@ fun FormView(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
+            MyImageArea(
+                uri = imageUri,
+                directory = directory,
+                onSetUri = { uri -> imageUri = uri }
+            )
             // Image du produit
             Image(
                 painter = painterResource(id = imageResId),
@@ -116,29 +133,53 @@ fun FormView(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Champ pour le nom du produit
-            TextField(
-                value = productName,
-                onValueChange = { productName = it },
-                label = { Text("Nom du produit") },
-                modifier = Modifier.fillMaxWidth()
-            )
+            Column(modifier = Modifier.fillMaxWidth()) {
+                TextField(
+                    value = productName,
+                    onValueChange = {
+                        productName = it
+                        productNameError =
+                            if (it.isEmpty()) "Le nom du produit est requis" else null
+                    },
+                    label = { Text("Nom du produit*") },
+                    isError = productNameError != null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                if (productNameError != null) {
+                    Text(
+                        text = productNameError!!,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
 
             // Sélecteur de date
-            OutlinedTextField(
-                value = purchaseDate,
-                onValueChange = {},
-                label = { Text("Date d'achat*") },
-                modifier = Modifier.fillMaxWidth(),
-                readOnly = true,
-                trailingIcon = {
-                    IconButton(onClick = { isDatePickerDialogOpen = true }) {
-                        Icon(
-                            Icons.Default.DateRange,
-                            contentDescription = "Sélectionner une date"
-                        )
+            Column(modifier = Modifier.fillMaxWidth()) {
+                OutlinedTextField(
+                    value = purchaseDate,
+                    onValueChange = {},
+                    label = { Text("Date d'achat*") },
+                    modifier = Modifier.fillMaxWidth(),
+                    readOnly = true,
+                    isError = purchaseDateError != null,
+                    trailingIcon = {
+                        IconButton(onClick = { isDatePickerDialogOpen = true }) {
+                            Icon(
+                                Icons.Default.DateRange,
+                                contentDescription = "Sélectionner une date"
+                            )
+                        }
                     }
+                )
+                if (purchaseDateError != null) {
+                    Text(
+                        text = purchaseDateError!!,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
                 }
-            )
+            }
 
             // DatePickerDialog
             if (isDatePickerDialogOpen) {
@@ -211,12 +252,18 @@ fun FormView(
             // Bouton de validation
             Button(
                 onClick = {
-                    if (productName.isEmpty() || purchaseDate.isEmpty()) {
+                    // Réinitialiser les messages d'erreur
+                    productNameError =
+                        if (productName.isEmpty()) "Le nom du produit est requis" else null
+                    purchaseDateError =
+                        if (purchaseDate.isEmpty()) "La date d'achat est requise" else null
+
+                    if (productName.isNotEmpty() && purchaseDate.isNotEmpty()) {
+                        showConfirmationDialog = true
+                    } else {
                         scope.launch {
                             snackbarHostState.showSnackbar("Veuillez remplir tous les champs obligatoires")
                         }
-                    } else {
-                        showConfirmationDialog = true
                     }
                 },
                 modifier = Modifier.fillMaxWidth()

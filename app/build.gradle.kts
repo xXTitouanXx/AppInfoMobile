@@ -7,7 +7,9 @@ plugins {
 android {
     namespace = "com.polytech.app"
     compileSdk = 34
-
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
     defaultConfig {
         applicationId = "com.polytech.app"
         minSdk = 24
@@ -71,5 +73,5 @@ dependencies {
     implementation("com.github.skydoves:colorpicker-compose:1.1.2")
     implementation(libs.compose.destinations.core)
     ksp(libs.compose.destinations.ksp)
-
+    implementation("io.coil-kt:coil:2.7.0")
 }

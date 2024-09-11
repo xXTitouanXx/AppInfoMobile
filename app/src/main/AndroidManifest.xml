@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppInfoMobile"
         tools:targetApi="31">
+
         <activity
             android:name=".view.test"
             android:exported="false"
@@ -34,10 +35,30 @@
             android:theme="@style/Theme.AppInfoMobile">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Configuration du FileProvider pour le stockage des images temporaires -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="@string/fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
     </application>
+
+    <!-- Permissions nécessaires pour l'accès à la caméra et au stockage -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- Déclaration d'une fonctionnalité optionnelle de la caméra -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
 </manifest>
