@@ -56,26 +56,12 @@ fun FormView(
     val scrollState = rememberScrollState()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-
-
-    @Composable
-    fun showDatePickerDialog(currentDate: Calendar) {
-        val context = LocalContext.current
-        val datePickerDialog = android.app.DatePickerDialog(
-            context, // Utilisation de context ici
-            { _, year, month, dayOfMonth ->
-                val selectedDate = Calendar.getInstance().apply {
-                    set(year, month, dayOfMonth)
-                }
-                purchaseDate =
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(selectedDate.time)
-            },
-            currentDate.get(Calendar.YEAR),
-            currentDate.get(Calendar.MONTH),
-            currentDate.get(Calendar.DAY_OF_MONTH)
-        )
-        datePickerDialog.show()
+    val imageResId = when (selectedProductType) {
+        "Consommable" -> R.drawable.kotlin // Remplace par le bon ID pour kotlin.svg
+        "Durable" -> R.drawable.swift // Remplace par le bon ID pour swift.svg
+        else -> R.drawable.android
     }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
@@ -91,7 +77,7 @@ fun FormView(
         ) {
             // Image du produit
             Image(
-                painter = painterResource(id = R.drawable.photo),
+                painter = painterResource(id = imageResId),
                 contentDescription = "image produit",
                 modifier = Modifier.size(150.dp)
             )
