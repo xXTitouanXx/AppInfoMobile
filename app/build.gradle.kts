@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.devtools.ksp)
 }
 
 android {
@@ -66,7 +67,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation("androidx.compose.material3:material3:1.3.0-rc01")
+    implementation("androidx.compose.material3:material3:1.3.0")
     implementation("com.github.skydoves:colorpicker-compose:1.1.2")
+    implementation(libs.compose.destinations.core)
+    ksp(libs.compose.destinations.ksp)
 
 }
