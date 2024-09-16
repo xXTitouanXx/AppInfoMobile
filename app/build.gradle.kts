@@ -73,5 +73,5 @@ dependencies {
     implementation("com.github.skydoves:colorpicker-compose:1.1.2")
     implementation(libs.compose.destinations.core)
     ksp(libs.compose.destinations.ksp)
-    implementation("io.coil-kt:coil:2.7.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
 }

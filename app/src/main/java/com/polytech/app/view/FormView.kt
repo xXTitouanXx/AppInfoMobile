@@ -1,15 +1,8 @@
 package com.polytech.app.view
 
-import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import android.os.Environment
-import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
@@ -24,15 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
-import com.polytech.app.MyImageArea
+import com.polytech.app.component.MyImageArea
 import com.polytech.app.R
 import com.polytech.app.model.FormData
-import com.polytech.app.ui.theme.AppInfoMobileTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
@@ -57,7 +48,6 @@ fun FormView(
     var showConfirmationDialog by remember { mutableStateOf(false) }
     var isDatePickerDialogOpen by remember { mutableStateOf(false) }
 
-    // Variables pour les messages d'erreur
     var productNameError by remember { mutableStateOf<String?>(null) }
     var purchaseDateError by remember { mutableStateOf<String?>(null) }
 
@@ -69,8 +59,8 @@ fun FormView(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val imageResId = when (selectedProductType) {
-        "Consommable" -> R.drawable.kotlin // Remplace par le bon ID pour kotlin.svg
-        "Durable" -> R.drawable.swift // Remplace par le bon ID pour swift.svg
+        "Consommable" -> R.drawable.kotlin
+        "Durable" -> R.drawable.swift
         else -> R.drawable.android
     }
 
@@ -87,16 +77,32 @@ fun FormView(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
+            // Afficher l'image ajoutée ou celle par défaut
+            if (imageUri != null) {
+                AsyncImage(
+                    model = imageUri,
+                    contentDescription = "image produit",
+                    modifier = Modifier.size(150.dp)
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = imageResId),
+                    contentDescription = "image produit",
+                    modifier = Modifier.size(150.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             MyImageArea(
                 uri = imageUri,
                 directory = directory,
-                onSetUri = { uri -> imageUri = uri }
-            )
-            // Image du produit
-            Image(
-                painter = painterResource(id = imageResId),
-                contentDescription = "image produit",
-                modifier = Modifier.size(150.dp)
+                onSetUri = { uri -> imageUri = uri },
+                onImageAdded = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Image ajoutée avec succès")
+                    }
+                }
             )
             Spacer(modifier = Modifier.height(16.dp))
 
