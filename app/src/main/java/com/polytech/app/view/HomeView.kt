@@ -1,10 +1,13 @@
 package com.polytech.app.view
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -38,98 +41,106 @@ fun HomeView(
         }
     }
 
-    // Séparer les produits favoris des autres produits
     val favoriteProducts = products.filter { it.isFavorite }
     val otherProducts = products.filterNot { it.isFavorite }
 
-    // Filtrer les produits en fonction de la requête de recherche
     val filteredFavoriteProducts = favoriteProducts.filter {
-        it.productName?.contains(searchQuery, ignoreCase = true) ?:
+        it.productName?.contains(searchQuery, ignoreCase = true) ?: false
     }
     val filteredOtherProducts = otherProducts.filter {
-        it.productName?.contains(searchQuery, ignoreCase = true) ?:
+        it.productName?.contains(searchQuery, ignoreCase = true) ?: false
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        // Champ de recherche
-        TextField(
-            value = searchQuery,
-            onValueChange = { newQuery -> searchQuery = newQuery },
-            label = { Text("Rechercher") },
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
-        )
-
-        // Afficher les produits favoris en LazyRow
-        if (filteredFavoriteProducts.isNotEmpty()) {
-            Text("Produits Favoris", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            LazyRow(
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            TextField(
+                value = searchQuery,
+                onValueChange = { newQuery -> searchQuery = newQuery },
+                label = { Text("Rechercher") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                contentPadding = PaddingValues(horizontal = 8.dp)
-            ) {
-                items(filteredFavoriteProducts) { product ->
-                    DisplayProduct(
-                        product = product,
-                        onItemClick = {
-                            navigator.navigate(EditProductViewDestination(product)) { result ->
-                                result.onSuccess { updatedProduct ->
-                                    products = products.map {
-                                        if (it.id == updatedProduct.id) updatedProduct else it
-                                    }
-                                }
+                    .padding(vertical = 8.dp)
+            )
+
+            if (filteredFavoriteProducts.isNotEmpty()) {
+                Text("Produits Favoris", style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    contentPadding = PaddingValues(horizontal = 8.dp)
+                ) {
+                    items(filteredFavoriteProducts) { product ->
+                        DisplayProduct(
+                            product = product,
+                            onItemClick = {
+                                Toast.makeText(
+                                    context,
+                                    "${product.productName} sélectionné",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                // navigator.navigate(EditProductViewDestination(product = product))
+                            },
+                            onItemLongClick = {
+                                products = products.filterNot { it == product }
+                                Toast.makeText(
+                                    context,
+                                    "${product.productName} supprimé",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-                        },
-                        onItemLongClick = {
-                            products = products.filterNot { it == product }
-                        }
-                    )
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (filteredOtherProducts.isNotEmpty()) {
+                Text("Tous les Produits", style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.fillMaxHeight()
+                ) {
+                    items(filteredOtherProducts) { product ->
+                        DisplayProduct(
+                            product = product,
+                            onItemClick = {
+                                Toast.makeText(
+                                    context,
+                                    "${product.productName} sélectionné",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                // navigator.navigate(EditProductViewDestination(product = product))
+                            },
+                            onItemLongClick = {
+                                products = products.filterNot { it == product }
+                                Toast.makeText(
+                                    context,
+                                    "${product.productName} supprimé",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        )
+                    }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Afficher les autres produits en LazyVerticalGrid
-        if (filteredOtherProducts.isNotEmpty()) {
-            Text("Tous les Produits", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2), // Nombre de colonnes dans la grille
-                modifier = Modifier.weight(1f)
-            ) {
-                items(filteredOtherProducts) { product ->
-                    DisplayProduct(
-                        product = product,
-                        onItemClick = {
-                            navigator.navigate(EditProductViewDestination(product)) { result ->
-                                result.onSuccess { updatedProduct ->
-                                    products = products.map {
-                                        if (it.id == updatedProduct.id) updatedProduct else it
-                                    }
-                                }
-                            }
-                        },
-                        onItemLongClick = {
-                            products = products.filterNot { it == product }
-                        }
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(onClick = { navigator.navigate(FormViewDestination) }) {
+        Button(
+            onClick = { navigator.navigate(FormViewDestination) },
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(16.dp)
+        ) {
             Text("Open Form")
         }
     }

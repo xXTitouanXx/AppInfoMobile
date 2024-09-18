@@ -3,7 +3,6 @@ package com.polytech.app.view
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.polytech.app.model.FormData
@@ -15,17 +14,15 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 fun EditProductView(
     navigator: DestinationsNavigator,
     product: FormData,
-    onProductUpdated: (FormData) -> Unit
+    onSave: (FormData) -> Unit
 ) {
-    var productName by remember { mutableStateOf(product.productName ?: "") }
-    var productType by remember { mutableStateOf(product.selectedProductType ?: "") }
+    var productName by remember { mutableStateOf(product.productName.orEmpty()) }
+    var purchaseDate by remember { mutableStateOf(product.purchaseDate.orEmpty()) }
+    var origin by remember { mutableStateOf(product.origin.orEmpty()) }
+    var selectedProductType by remember { mutableStateOf(product.selectedProductType.orEmpty()) }
     var isFavorite by remember { mutableStateOf(product.isFavorite) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp), verticalArrangement = Arrangement.Center
-    ) {
+    Column(modifier = Modifier.padding(16.dp)) {
         TextField(
             value = productName,
             onValueChange = { productName = it },
@@ -33,27 +30,42 @@ fun EditProductView(
         )
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
-            value = productType,
-            onValueChange = { productType = it },
+            value = purchaseDate,
+            onValueChange = { purchaseDate = it },
+            label = { Text("Date d'achat") }
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        TextField(
+            value = origin,
+            onValueChange = { origin = it },
+            label = { Text("Pays d'origine") }
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        TextField(
+            value = selectedProductType,
+            onValueChange = { selectedProductType = it },
             label = { Text("Type de produit") }
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Favoris")
-            Spacer(modifier = Modifier.width(8.dp))
-            Checkbox(checked = isFavorite, onCheckedChange = { isFavorite = it })
+        Row {
+            Text("Favori")
+            Switch(
+                checked = isFavorite,
+                onCheckedChange = { isFavorite = it }
+            )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
-            val updatedProduct = product.copy(
-                productName = productName,
-                selectedProductType = productType,
-                isFavorite = isFavorite
+            onSave(
+                product.copy(
+                    productName = productName,
+                    purchaseDate = purchaseDate,
+                    origin = origin,
+                    selectedProductType = selectedProductType,
+                    isFavorite = isFavorite
+                )
             )
-            onProductUpdated(updatedProduct)
-            navigator.navigateUp()
+            navigator.popBackStack() // Retour à la vue précédente après sauvegarde
         }) {
             Text("Enregistrer")
         }

@@ -27,13 +27,13 @@ data class FormData(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id) // Écrire l'ID dans le Parcel
+        parcel.writeString(id)
         parcel.writeString(productName)
         parcel.writeString(purchaseDate)
         parcel.writeString(origin)
         parcel.writeString(selectedProductType)
         parcel.writeByte(if (isFavorite) 1 else 0)
-        parcel.writeParcelable(imageUri, flags) // Écrire l'URI dans le Parcel
+        parcel.writeParcelable(imageUri, flags)
     }
 
     override fun describeContents(): Int {
