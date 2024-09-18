@@ -1,30 +1,39 @@
 package com.polytech.app.model
 
+import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
+import kotlin.random.Random
 
-class FormData(
+data class FormData(
+    val id: String = generateUniqueId(), // Ajouter un ID unique
     val productName: String? = null,
-    val purchaseDate: String ? = null,
-    val origin: String ? = null,
-    val selectedProductType: String ? = null,
-    val isFavorite: Boolean = false
+    val purchaseDate: String? = null,
+    val origin: String? = null,
+    val selectedProductType: String? = null,
+    val isFavorite: Boolean = false,
+    val imageUri: Uri? = null // Ajout de ce champ pour l'URI de l'image
 ) : Parcelable {
+
     constructor(parcel: Parcel) : this(
+        parcel.readString() ?: generateUniqueId(), // Lire l'ID depuis le Parcel
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
-        parcel.readByte() != 0.toByte()
+        parcel.readByte() != 0.toByte(),
+        parcel.readParcelable(Uri::class.java.classLoader) // Lire l'URI depuis le Parcel
     ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id) // Écrire l'ID dans le Parcel
         parcel.writeString(productName)
         parcel.writeString(purchaseDate)
         parcel.writeString(origin)
         parcel.writeString(selectedProductType)
         parcel.writeByte(if (isFavorite) 1 else 0)
+        parcel.writeParcelable(imageUri, flags) // Écrire l'URI dans le Parcel
     }
 
     override fun describeContents(): Int {
@@ -38,6 +47,10 @@ class FormData(
 
         override fun newArray(size: Int): Array<FormData?> {
             return arrayOfNulls(size)
+        }
+
+        private fun generateUniqueId(): String {
+            return Random.nextInt(0, Int.MAX_VALUE).toString()
         }
     }
 }

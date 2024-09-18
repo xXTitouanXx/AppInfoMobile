@@ -11,6 +11,7 @@ composeBom = "2024.04.01"
 material3 = "1.3.0-rc01"
 composeDestination = "1.10.2"
 ksp = "1.9.0-1.0.13"
+roomKtx = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -30,6 +31,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 compose-destinations-core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "composeDestination" }
 compose-destinations-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "composeDestination" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -96,7 +96,7 @@ fun FormView(
 
             MyImageArea(
                 uri = imageUri,
-                directory = directory,
+                directory = context.cacheDir,
                 onSetUri = { uri -> imageUri = uri },
                 onImageAdded = {
                     scope.launch {
@@ -293,7 +293,8 @@ fun FormView(
                                     purchaseDate = purchaseDate,
                                     origin = origin,
                                     selectedProductType = selectedProductType,
-                                    isFavorite = isFavorite
+                                    isFavorite = isFavorite,
+                                    imageUri = imageUri // Ajout de imageUri ici
                                 )
                                 resultNavigator.navigateBack(formData)
                             }
@@ -320,7 +321,7 @@ fun FormView(
                     },
                     title = { Text("Détails du Produit") },
                     text = {
-                        Text("Nom: $productName\nDate d'achat: $purchaseDate\nCouleur: $color\nPays d'origine: $origin\nType: $selectedProductType\nFavoris: ${if (isFavorite) "Oui" else "Non"}")
+                        Text("Nom: $productName\nDate d'achat: $purchaseDate\nCouleur: $color\nPays d'origine: $origin\nType: $selectedProductType\nFavoris: ${if (isFavorite) "Oui" else "Non"}\nImage URI: $imageUri")
                     }
                 )
             }
