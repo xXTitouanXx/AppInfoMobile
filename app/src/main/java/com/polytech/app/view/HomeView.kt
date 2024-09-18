@@ -141,8 +141,7 @@ fun HomeView(
                 .align(Alignment.BottomCenter)
                 .padding(16.dp)
         ) {
-            Text("Open Form")
+            Text("Ouvrir le formulaire")
         }
     }
 }
-

@@ -20,9 +20,7 @@ import com.polytech.app.model.FormData
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DisplayProduct(
-    product: FormData,
-    onItemClick: () -> Unit,
-    onItemLongClick: () -> Unit
+    product: FormData, onItemClick: () -> Unit, onItemLongClick: () -> Unit
 ) {
     val imageResId = when (product.selectedProductType) {
         "Consommable" -> R.drawable.kotlin
@@ -34,19 +32,15 @@ fun DisplayProduct(
             .fillMaxWidth()
             .padding(8.dp)
             .combinedClickable(
-                onClick = onItemClick,
-                onLongClick = onItemLongClick
+                onClick = onItemClick, onLongClick = onItemLongClick
             ),
         color = MaterialTheme.colorScheme.surface,
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // Affichage de l'image
             if (product.imageUri != null) {
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(product.imageUri)
-                        .crossfade(true)
-                        .build(),
+                    model = ImageRequest.Builder(LocalContext.current).data(product.imageUri)
+                        .crossfade(true).build(),
                     contentDescription = "Image du produit",
                     modifier = Modifier
                         .size(150.dp)

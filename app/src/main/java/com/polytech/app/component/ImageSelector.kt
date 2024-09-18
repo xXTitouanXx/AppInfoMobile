@@ -100,17 +100,6 @@ fun MyImageArea(
         Button(onClick = { showBottomSheet = true }) {
             Text(text = "Gallerie / Prendre une photo")
         }
-
-//        uri?.let {
-//            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-//                AsyncImage(
-//                    model = it,
-//                    modifier = Modifier.size(160.dp),
-//                    contentDescription = null,
-//                )
-//            }
-//            Spacer(modifier = Modifier.height(16.dp))
-        //     }
     }
 }
 

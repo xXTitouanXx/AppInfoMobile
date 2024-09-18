@@ -65,7 +65,7 @@ fun EditProductView(
                     isFavorite = isFavorite
                 )
             )
-            navigator.popBackStack() // Retour à la vue précédente après sauvegarde
+            navigator.popBackStack()
         }) {
             Text("Enregistrer")
         }

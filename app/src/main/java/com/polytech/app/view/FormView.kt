@@ -258,7 +258,6 @@ fun FormView(
             // Bouton de validation
             Button(
                 onClick = {
-                    // Réinitialiser les messages d'erreur
                     productNameError =
                         if (productName.isEmpty()) "Le nom du produit est requis" else null
                     purchaseDateError =
@@ -294,7 +293,7 @@ fun FormView(
                                     origin = origin,
                                     selectedProductType = selectedProductType,
                                     isFavorite = isFavorite,
-                                    imageUri = imageUri // Ajout de imageUri ici
+                                    imageUri = imageUri
                                 )
                                 resultNavigator.navigateBack(formData)
                             }

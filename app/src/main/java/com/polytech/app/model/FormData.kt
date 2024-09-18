@@ -6,23 +6,23 @@ import android.os.Parcelable
 import kotlin.random.Random
 
 data class FormData(
-    val id: String = generateUniqueId(), // Ajouter un ID unique
+    val id: String = generateUniqueId(),
     val productName: String? = null,
     val purchaseDate: String? = null,
     val origin: String? = null,
     val selectedProductType: String? = null,
     val isFavorite: Boolean = false,
-    val imageUri: Uri? = null // Ajout de ce champ pour l'URI de l'image
+    val imageUri: Uri? = null
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-        parcel.readString() ?: generateUniqueId(), // Lire l'ID depuis le Parcel
+        parcel.readString() ?: generateUniqueId(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readByte() != 0.toByte(),
-        parcel.readParcelable(Uri::class.java.classLoader) // Lire l'URI depuis le Parcel
+        parcel.readParcelable(Uri::class.java.classLoader)
     ) {
     }
 
