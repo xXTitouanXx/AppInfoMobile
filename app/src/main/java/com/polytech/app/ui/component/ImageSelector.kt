@@ -1,4 +1,4 @@
-package com.polytech.app.component
+package com.polytech.app.ui.component
 
 import android.Manifest
 import android.content.pm.PackageManager

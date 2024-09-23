@@ -1,4 +1,4 @@
-package com.polytech.app.ui.theme
+package com.polytech.app.ui.view.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

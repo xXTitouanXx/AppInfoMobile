@@ -1,4 +1,4 @@
-package com.polytech.app.component
+package com.polytech.app.ui.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -15,7 +15,7 @@ import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.polytech.app.R
-import com.polytech.app.model.FormData
+import com.polytech.app.data.model.FormData
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

@@ -1,4 +1,4 @@
-package com.polytech.app.view
+package com.polytech.app.ui.view
 
 import android.util.Log
 import android.widget.Toast
@@ -15,30 +15,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.polytech.app.component.DisplayProduct
-import com.polytech.app.model.FormData
-import com.polytech.app.view.destinations.EditProductViewDestination
-import com.polytech.app.view.destinations.FormViewDestination
+import com.polytech.app.ui.component.DisplayProduct
+import com.polytech.app.data.model.FormData
+import com.polytech.app.ui.view.destinations.EditProductViewDestination
+import com.polytech.app.ui.view.destinations.FormViewDestination
+import com.polytech.app.ui.view.destinations.ListApiViewDestination
+import com.polytech.app.ui.viewmodel.ProductViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
+import org.koin.androidx.compose.koinViewModel
 
 @Destination(start = true)
 @Composable
 fun HomeView(
     navigator: DestinationsNavigator,
-    resultRecipient: ResultRecipient<FormViewDestination, FormData>
+    productViewModel: ProductViewModel = koinViewModel(),
+    //resultRecipient: ResultRecipient<FormViewDestination, FormData>
 ) {
     val context = LocalContext.current
 
-    var products by rememberSaveable { mutableStateOf<List<FormData>>(emptyList()) }
+    //var products by rememberSaveable { mutableStateOf<List<FormData>>(emptyList()) }
     var searchQuery by rememberSaveable { mutableStateOf("") }
 
-    resultRecipient.onNavResult {
-        if (it is NavResult.Value) {
-            products = products + it.value
-        }
+    val products by productViewModel.products.collectAsState()
+    LaunchedEffect(products) {
+        Log.d("HomeView", "Products in HomeView: ${productViewModel.products}")
     }
 
     val favoriteProducts = products.filter { it.isFavorite }
@@ -65,7 +68,7 @@ fun HomeView(
                 label = { Text("Rechercher") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                    .padding(vertical = 16.dp)
             )
 
             if (filteredFavoriteProducts.isNotEmpty()) {
@@ -89,7 +92,7 @@ fun HomeView(
                                 navigator.navigate(EditProductViewDestination(product))
                             },
                             onItemLongClick = {
-                                products = products.filterNot { it == product }
+                                productViewModel.removeProduct(product)
                                 Toast.makeText(
                                     context,
                                     "${product.productName} supprimé",
@@ -122,7 +125,7 @@ fun HomeView(
                                 navigator.navigate(EditProductViewDestination(product))
                             },
                             onItemLongClick = {
-                                products = products.filterNot { it == product }
+                                productViewModel.removeProduct(product)
                                 Toast.makeText(
                                     context,
                                     "${product.productName} supprimé",
@@ -135,13 +138,26 @@ fun HomeView(
             }
         }
 
-        Button(
-            onClick = { navigator.navigate(FormViewDestination) },
+        Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(16.dp)
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Ouvrir le formulaire")
+            Button(
+                onClick = {navigator.navigate(ListApiViewDestination)},
+                modifier = Modifier
+            ) {
+                Text("Liste d'hébergements")
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Button(
+                onClick = { navigator.navigate(FormViewDestination) },
+                modifier = Modifier
+            ) {
+                Text("Ouvrir le formulaire")
+            }
         }
     }
 }

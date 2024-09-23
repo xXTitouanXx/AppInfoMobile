@@ -1,21 +1,26 @@
-package com.polytech.app.view
+package com.polytech.app.ui.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.polytech.app.model.FormData
+import com.polytech.app.data.model.FormData
+import com.polytech.app.ui.view.destinations.HomeViewDestination
+import com.polytech.app.ui.viewmodel.ProductViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
+import org.koin.androidx.compose.koinViewModel
 
 @Destination
 @Composable
 fun EditProductView(
     navigator: DestinationsNavigator,
     product: FormData,
-    resultNavigator: ResultBackNavigator<FormData>
+    viewModel: ProductViewModel = koinViewModel(),
+    //resultNavigator: ResultBackNavigator<FormData>
 ) {
     var productName by remember { mutableStateOf(product.productName.orEmpty()) }
     var purchaseDate by remember { mutableStateOf(product.purchaseDate.orEmpty()) }
@@ -23,7 +28,13 @@ fun EditProductView(
     var selectedProductType by remember { mutableStateOf(product.selectedProductType.orEmpty()) }
     var isFavorite by remember { mutableStateOf(product.isFavorite) }
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
         TextField(
             value = productName,
             onValueChange = { productName = it },
@@ -64,7 +75,9 @@ fun EditProductView(
                 selectedProductType = selectedProductType,
                 isFavorite = isFavorite
             )
-            resultNavigator.navigateBack(updatedProduct)
+            viewModel.updateProduct(updatedProduct)
+            navigator.navigate(HomeViewDestination)
+            //resultNavigator.navigateBack(updatedProduct)
         }) {
             Text("Enregistrer")
         }

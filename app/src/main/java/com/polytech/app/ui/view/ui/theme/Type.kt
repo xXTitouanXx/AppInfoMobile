@@ -1,4 +1,4 @@
-package com.polytech.app.view.ui.theme
+package com.polytech.app.ui.view.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

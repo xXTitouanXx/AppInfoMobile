@@ -1,4 +1,4 @@
-package com.polytech.app.model
+package com.polytech.app.data.model
 
 import android.net.Uri
 import android.os.Parcel

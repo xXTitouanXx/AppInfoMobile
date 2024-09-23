@@ -1,4 +1,4 @@
-package com.polytech.app.view
+package com.polytech.app.ui.view
 
 import android.net.Uri
 import android.os.Environment
@@ -21,13 +21,16 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
-import com.polytech.app.component.MyImageArea
+import com.polytech.app.ui.component.MyImageArea
 import com.polytech.app.R
-import com.polytech.app.model.FormData
+import com.polytech.app.data.model.FormData
+import com.polytech.app.ui.view.destinations.HomeViewDestination
+import com.polytech.app.ui.viewmodel.ProductViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,7 +39,8 @@ import java.util.*
 @Composable
 fun FormView(
     navigator: DestinationsNavigator,
-    resultNavigator: ResultBackNavigator<FormData>
+    viewModel: ProductViewModel = koinViewModel(),
+    //resultNavigator: ResultBackNavigator<FormData>
 ) {
     var isFavorite by remember { mutableStateOf(false) }
     var selectedProductType by remember { mutableStateOf("Consommable") }
@@ -295,7 +299,9 @@ fun FormView(
                                     isFavorite = isFavorite,
                                     imageUri = imageUri
                                 )
-                                resultNavigator.navigateBack(formData)
+                                viewModel.addProduct(formData)
+                                navigator.popBackStack()
+                                //resultNavigator.navigateBack(formData)
                             }
                         ) {
                             Text("Oui")
