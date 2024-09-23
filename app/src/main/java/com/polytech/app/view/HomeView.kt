@@ -86,7 +86,7 @@ fun HomeView(
                                     "${product.productName} sélectionné",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                // navigator.navigate(EditProductViewDestination(product = product))
+                                navigator.navigate(EditProductViewDestination(product))
                             },
                             onItemLongClick = {
                                 products = products.filterNot { it == product }
@@ -119,7 +119,7 @@ fun HomeView(
                                     "${product.productName} sélectionné",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                // navigator.navigate(EditProductViewDestination(product = product))
+                                navigator.navigate(EditProductViewDestination(product))
                             },
                             onItemLongClick = {
                                 products = products.filterNot { it == product }

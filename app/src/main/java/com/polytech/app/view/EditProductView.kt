@@ -8,13 +8,14 @@ import androidx.compose.ui.unit.dp
 import com.polytech.app.model.FormData
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 
 @Destination
 @Composable
 fun EditProductView(
     navigator: DestinationsNavigator,
     product: FormData,
-    onSave: (FormData) -> Unit
+    resultNavigator: ResultBackNavigator<FormData>
 ) {
     var productName by remember { mutableStateOf(product.productName.orEmpty()) }
     var purchaseDate by remember { mutableStateOf(product.purchaseDate.orEmpty()) }
@@ -56,16 +57,14 @@ fun EditProductView(
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
-            onSave(
-                product.copy(
-                    productName = productName,
-                    purchaseDate = purchaseDate,
-                    origin = origin,
-                    selectedProductType = selectedProductType,
-                    isFavorite = isFavorite
-                )
+            val updatedProduct = product.copy(
+                productName = productName,
+                purchaseDate = purchaseDate,
+                origin = origin,
+                selectedProductType = selectedProductType,
+                isFavorite = isFavorite
             )
-            navigator.popBackStack()
+            resultNavigator.navigateBack(updatedProduct)
         }) {
             Text("Enregistrer")
         }
