@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">AppInfoMobile</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_home">Home</string>
+    <string name="title_activity_form">Form</string>
+    <string name="title_activity_test">test</string>
+    <string name="fileprovider">com.polytech.app.fileprovider</string>
 </resources>

@@ -1,0 +1,33 @@
+package com.polytech.app.data.model
+
+data class Accommodation(
+    val type: String,
+    val name: String? = null,
+    val operator: String? = null,
+    val wheelchair: Boolean? = null,
+    val openingHours: String? = null,
+    val receptionOpeningHours: String? = null,
+    val stars: Double? = null,
+    val rooms: Int? = null,
+    val beds: Int? = null,
+    val internetAccess: String? = null,
+    val campSite: String? = null,
+    val fee: String? = null,
+    val capacity: Int? = null,
+    val website: String? = null,
+    val phone: String? = null,
+    val facebook: String? = null,
+    val email: String? = null,
+    val metaNameCom: String? = null,
+    val metaCodeCom: String? = null,
+    val metaNameDep: String? = null,
+    val metaCodeDep: String? = null,
+    val metaNameReg: String? = null,
+    val metaCodeReg: String? = null,
+    val metaOsmId: Long,
+    val metaOsmUrl: String,
+    val metaFirstUpdate: String,
+    val metaLastUpdate: String,
+    val metaVersionsNumber: Int,
+    val metaUsersNumber: Int
+)
